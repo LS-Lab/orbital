@@ -54,10 +54,10 @@ abstract class AbstractRational extends AbstractReal implements Rational {
     }
     
     public boolean isInfinite() {
-    	return false;
+        return false;
     }
     public boolean isNaN() {
-    	return denominator().isZero();
+        return denominator().isZero();
     }
     
     // Arithmetic implementation synonyms

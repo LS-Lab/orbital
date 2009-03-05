@@ -149,18 +149,18 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
 
         // component-wise
         try {
-        	ListIterator dst;
-        	Setops.copy(dst = ret.iterator(), Functionals.map(new orbital.logic.functor.Function() {
-        		public Object apply(Object o) {
-        			//@todo could rewrite pure functional even more (by using pair copy function etc)
-        			Arithmetic/*>S<*/ i = (Arithmetic)o;
-        			return op.apply(get(i), b.get(i));
-        		}
-        	}, combinedIndices(this,b)));
-        	assert !dst.hasNext() : "equal indexSet() for iterator view implies equal structure of iterators";
+                ListIterator dst;
+                Setops.copy(dst = ret.iterator(), Functionals.map(new orbital.logic.functor.Function() {
+                        public Object apply(Object o) {
+                                //@todo could rewrite pure functional even more (by using pair copy function etc)
+                                Arithmetic/*>S<*/ i = (Arithmetic)o;
+                                return op.apply(get(i), b.get(i));
+                        }
+                }, combinedIndices(this,b)));
+                assert !dst.hasNext() : "equal indexSet() for iterator view implies equal structure of iterators";
             return ret;
         } catch (IndexOutOfBoundsException ex) {
-        	throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with indexSet()  " + indexSet() + " and " + b.indexSet() + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
+                throw (IndexOutOfBoundsException) new IndexOutOfBoundsException(ex + " during a" + op + "b with indexSet()  " + indexSet() + " and " + b.indexSet() + " of " + this + "@" + getClass() + " and " + b + "@" + b.getClass()).initCause(ex);
         }
     }
     

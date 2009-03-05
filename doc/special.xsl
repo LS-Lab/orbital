@@ -42,7 +42,7 @@
 <xsl:template name="logo">
    <tr>
       <td height="80" align="center" valign="center" style="padding:6pt 0pt;">
-<!--<i><b><font color="#2CAFEE">functologic</font></b></i>-->
+<!--<i><b><font color="#2CAFEE">symbolaris</font></b></i>-->
       </td>
    </tr>
 </xsl:template>
@@ -52,10 +52,10 @@
 <!-- MUST be surrounded by TD tags -->
 <xsl:template name="webmaster">
     <td width="50" align="right">
-      <a href="http://www.functologic.com/feedback.html">
+      <a href="http://symbolaris.com/feedback.html">
       <!-- image content will not get forwarded -->
         <font><xsl:attribute name="color"><xsl:value-of select="$footerColor"/></xsl:attribute>
-	  <img src="http://www.uni-karlsruhe.de/~Andre.Platzer/mailto.gif" height="26" width="30" alt="send mail" />
+	  <img src="http://symbolaris.com/mailto.gif" height="26" width="30" alt="send mail" />
         </font>
       </a>
     </td>
@@ -64,9 +64,9 @@
 <!-- invoked within html/head in order to stamp user-specific information -->
 <xsl:template name="stampHead">
   <meta name="author" content="Andre Platzer" />
-  <meta name="copyright" content="&#169; 1996-2003 Andr&#233; Platzer" />
+  <meta name="copyright" content="&#169; 1996-2009 Andr&#233; Platzer" />
   <!-- <meta name="robots" content="INDEX, FOLLOW" /> -->
-  <link rel="start" href="http://www.functologic.com/" type="text/html" title="functologic.com" />
+  <link rel="start" href="http://symbolaris.com/" type="text/html" title="symbolaris.com" />
 </xsl:template>
 
 
