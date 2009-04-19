@@ -28,7 +28,7 @@ some x (p(x) & q(x)) |= (some x p(x)) & (some x q(x))
 # derived properties
 #=#  |= all x all y ((x=y) -> (y=x))	# "=" symmetric
 #=#  |= all x all y all z ((x=y) & (y=z) -> (x=z))	# "=" transitive
-#=#  |= all x all y all z ((x=z) & (y=z) -> (x=y))	# "=" euclidian
+#=#  |= all x all y all z ((x=z) & (y=z) -> (x=y))	# "=" euclidean
 #
 # definitions
 #
@@ -42,6 +42,10 @@ some x (p(x) & q(x)) |= (some x p(x)) & (some x q(x))
 #
 # diverse
 #
+
+|= (all x (p(x)->t(x))) -> ((all x p(x)) -> (all x t(x)))
+|= (all x (p(x)->t(x))) -> ((some x p(x)) -> (some x t(x)))
+
 |= ~some x (P(x)&~P(x))				# Law of noncontradiction with P being a metavariable [Fitting 1998, 7.3, p145]
 #=#|= (x=y) => (P(x)<->P(y))				# Indiscernibility of Identicals
 #=#|= (x=y) => (P(x)->P(y))				# Leibniz's Law
