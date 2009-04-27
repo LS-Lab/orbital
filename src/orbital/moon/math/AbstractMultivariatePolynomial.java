@@ -59,6 +59,8 @@ abstract class AbstractMultivariatePolynomial/*<R extends Arithmetic>*/
         if (o instanceof AbstractMultivariatePolynomial) {
             // optimized version of super.equals
             AbstractMultivariatePolynomial/*>T<*/ b = (AbstractMultivariatePolynomial) o;
+            if (rank() != b.rank())
+            	return false;
             final int[] d = Functionals.map(Operations.max, dimensions(), b.dimensions());
             boolean eq = Setops.all(iterator(d), b.iterator(d), Predicates.equal);
             boolean eq2 = false;
