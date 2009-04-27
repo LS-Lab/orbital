@@ -52,7 +52,7 @@ class RepetitivePermutation extends Combinatorical {
             else
                 return permutation;
         } 
-        throw new SuspiciousError();
+        throw new AssertionError();
     } 
 
     public boolean hasPrevious() {
@@ -81,7 +81,7 @@ class RepetitivePermutation extends Combinatorical {
         if (permutation.length == 0)
             return permutation;
         else
-            throw new SuspiciousError();
+            throw new AssertionError();
     } 
 
     public int count() {

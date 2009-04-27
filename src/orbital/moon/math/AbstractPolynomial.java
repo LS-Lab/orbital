@@ -39,6 +39,8 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     public boolean equals(Object o) {
         if (o instanceof Polynomial) {
             final Polynomial/*>T<*/ b = (Polynomial) o;
+            if (rank() != b.rank())
+            	return false;
             boolean eq =  Setops.all(combinedIndices(this, b),
                        new Predicate() {
                            public boolean apply(Object o) {
