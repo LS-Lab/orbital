@@ -40,7 +40,7 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
         if (o instanceof Polynomial) {
             final Polynomial/*>T<*/ b = (Polynomial) o;
             if (rank() != b.rank())
-            	return false;
+                return false;
             boolean eq =  Setops.all(combinedIndices(this, b),
                        new Predicate() {
                            public boolean apply(Object o) {
@@ -181,6 +181,9 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     }
 
     public Arithmetic multiply(Arithmetic b) {
+        if (b instanceof Scalar) {
+                return scale((Scalar)b);
+        }
         return multiply((Polynomial)b);
     }
 
@@ -234,11 +237,14 @@ abstract class AbstractPolynomial/*<R extends Arithmetic, S extends Arithmetic>*
     }
 
     public Arithmetic divide(Arithmetic b) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("dividing polynomials is not generally defined");
+        if (b instanceof Scalar) {
+                return scale((Scalar)b.inverse());
+        }
+        throw new UnsupportedOperationException("dividing polynomials is not generally defined:( " + this + ") / (" + b + ")");
     } 
 
     public Arithmetic inverse() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("inverse of polynomials is not generally defined");
+        throw new UnsupportedOperationException("inverse of polynomials is not generally defined: 1 / (" + this + ")");
     } 
 
     public String toString() {
