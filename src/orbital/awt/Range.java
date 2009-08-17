@@ -6,6 +6,8 @@
 
 package orbital.awt;
 
+import java.io.Serializable;
+
 import orbital.math.Vector;
 
 import orbital.math.Values;
@@ -14,8 +16,11 @@ import orbital.math.Values;
  * Graphical range holder.
  * @invariants min.dimension() == max.dimension()
  */
-public class Range {
-    public Vector min;
+public class Range implements Serializable {
+	private static final long serialVersionUID = -5056929164974606200L;
+	
+
+	public Vector min;
 
     public Vector max;
 
