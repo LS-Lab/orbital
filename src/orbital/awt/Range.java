@@ -17,10 +17,10 @@ import orbital.math.Values;
  * @invariants min.dimension() == max.dimension()
  */
 public class Range implements Serializable {
-	private static final long serialVersionUID = -5056929164974606200L;
-	
+        private static final long serialVersionUID = -5056929164974606200L;
+        
 
-	public Vector min;
+        public Vector min;
 
     public Vector max;
 
