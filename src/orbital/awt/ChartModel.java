@@ -42,7 +42,8 @@ import orbital.util.Utility;
  * <ul>
  *   <li>a set of points represented as a {@link orbital.math.Matrix}</li>.
  *   <li>a function represented as a {@link orbital.logic.functor.Function},
- *     or even {@link orbital.math.functional.Function}</li>.
+ *     or even {@link orbital.math.functional.Function}.
+ *     A return value of <code>null</code> by these indicates undefined values that are not to be plotted.</li>.
  * </ul>
  * </p>
  * <p>

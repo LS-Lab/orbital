@@ -495,13 +495,26 @@ public class Plot2D extends Canvas implements Printable, Serializable {
         // will always contain next x|y value
         Vector n = applyFunction(f, range.min.get(0));
         for (double t = ((Real)range.min.get(0)).doubleValue(); t < ((Real)range.max.get(0)).doubleValue(); t += precision) {
-            Vector v = n;
+            Vector old = n;
             n = applyFunction(f, vf.valueOf(t + precision));
+            if (old == null) {
+                if (n == null) {
+                        continue;
+                } else {
+                        // leave out undefined values
+                        g.drawArc(sx(n.get(0)), sy(n.get(1)), 2, 2, 0, 360);
+                        continue;
+                }
+            } else if (n == null) {
+                // leave out undefined values
+                g.drawArc(sx(old.get(0)), sy(old.get(1)), 2, 2, 0, 360);
+                continue;
+            }
 
             // TODO: check for NaN and do not draw then
             // TODO: think if it is useful to interpolate with cubical polynoms, ... here
             // perhaps we could already have replaced the actual function with interpolating polynomials and use that information here?
-            g.drawLine(sx(v.get(0)), sy(v.get(1)), sx(n.get(0)), sy(n.get(1)));
+            g.drawLine(sx(old.get(0)), sy(old.get(1)), sx(n.get(0)), sy(n.get(1)));
 
             // n will fall through and continue to be used as new v, above
         } 
@@ -509,9 +522,14 @@ public class Plot2D extends Canvas implements Printable, Serializable {
 
     private Vector applyFunction(Function f, Arithmetic arg) {
         Arithmetic value = (Arithmetic) f.apply(arg);
-        if (value instanceof Vector) {
+        if (value == null) {
+                // leave out undefined values
+                return null;
+        } else if (value instanceof Vector) {
             Vector vector = (Vector) value;
             assert vector.dimension() == 2 : "Plot2D only handles 2-dimensional vectors";
+            if (vector.get(0) == null || vector.get(1) == null)
+            	return null;
             return vector;
         } else
             return Values.getDefaultInstance().valueOf(new Arithmetic[] {
