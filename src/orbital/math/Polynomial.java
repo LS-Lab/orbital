@@ -145,6 +145,9 @@ public interface Polynomial/*<R extends Arithmetic, S extends Arithmetic>*/
 
     /**
      * Returns an iterator over all coefficients (up to degree).
+     * <p>
+     * Note that the order and length of this iterator does not necessarily fit to the order and length of {@link #indices()} or {@link #monomials()}.
+     * </p>
      * @xxx remove/adapt, whatever. What are "all" coefficients up to "degree" in general?
      */
     ListIterator/*<R>*/ iterator();
