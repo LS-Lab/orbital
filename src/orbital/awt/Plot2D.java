@@ -1,7 +1,7 @@
 /*
  * @(#)Plot2D.java 0.9 1999/03/16 Andre Platzer
  * 
- * Copyright (c) 1996-1999 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1996-2009 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.awt;
@@ -54,6 +54,7 @@ import java.util.logging.Level;
  *    If, however, a value for <code>precision</code> is specified this option is ignored.</li>
  *   <li><code>precision</code> - <code>java.lang.Double</code> object that defines the precision with which
  *    intermediate values will be calculated.</li>
+ *   <li><code>label</code> - <code>java.lang.String</code> the label drawn for the function.</li>
  * </ul>
  * Attributes for {@link orbital.logic.functor.Function}[] resp. vectorial Function are the same as for Function.
  * An instance of Function[] represents a parametric plot, a vectorial Function (one that returns Vectors)
@@ -75,17 +76,17 @@ public class Plot2D extends Canvas implements Printable, Serializable {
     /**
      * @serial
      */
-    private ChartModel            model = null;
+    private ChartModel model = null;
 
     /**
      * @serial
      */
-    private boolean                       autoScaling;
+    private boolean autoScaling;
 
     /**
      * @serial
      */
-    private boolean                       fullScaling;
+    private boolean fullScaling;
 
     public Plot2D(ChartModel model) {
         setModel(model);
@@ -293,6 +294,7 @@ public class Plot2D extends Canvas implements Printable, Serializable {
         double    scalex = (double) (d.width - 0.) / (maxx - minx);
         double    scaley = (double) (d.height - 0.) / (maxy - miny);
         double    orgx = minx * scalex, orgy = miny * scaley;
+        //@TODO should this be orgy = maxy * scaley? But this method doesn't seem to be called
         g.translate(orgx, orgy);
         g.scale(scalex, scaley);
     } 
@@ -307,6 +309,12 @@ public class Plot2D extends Canvas implements Printable, Serializable {
         scaley = (double) (0. - d.height) / (maxy - miny);
         orgx = minx;
         orgy = maxy;
+//        if (sy(miny) + MARK_RADIUS + 20/*fm.getHeight()*/ > d.height) {
+//              
+//        }
+//        if (sx(minx) - MARK_RADIUS - 20/*fm.stringWidth(label)*/ < 0) {
+//              setWindow(minxo - , minyo, maxxo, maxyo);
+//        }
     } 
 
     private void calcSettings() {
@@ -458,10 +466,20 @@ public class Plot2D extends Canvas implements Printable, Serializable {
         // x-axis pointers
         g.drawLine(sx(range.max.get(0)) - POINTER_RADIUS, sy(x_axis) - POINTER_RADIUS, sx(range.max.get(0)), sy(x_axis));
         g.drawLine(sx(range.max.get(0)) - POINTER_RADIUS, sy(x_axis) + POINTER_RADIUS, sx(range.max.get(0)), sy(x_axis));
+        // x-axis label
+        if (model.getAxesLabel() != null && model.getAxesLabel()[0] != null) {
+                String label = model.getAxesLabel()[0];
+                g.drawString(label, sx(range.max.get(0)) - POINTER_RADIUS - fm.stringWidth(label), sy(x_axis));
+        }
 
         // y-axis pointers
         g.drawLine(sx(y_axis) - POINTER_RADIUS, sy(range.max.get(1)) + POINTER_RADIUS, sx(y_axis), sy(range.max.get(1)));
         g.drawLine(sx(y_axis) + POINTER_RADIUS, sy(range.max.get(1)) + POINTER_RADIUS, sx(y_axis), sy(range.max.get(1)));
+        // y-axis label
+        if (model.getAxesLabel() != null && model.getAxesLabel()[1] != null) {
+                String label = model.getAxesLabel()[1];
+                g.drawString(label, sx(y_axis), sy(range.max.get(1)) - POINTER_RADIUS - fm.getHeight());
+        }
     } 
 
     protected void drawGraph(Graphics g, Matrix A, Map attribs) {
@@ -518,6 +536,30 @@ public class Plot2D extends Canvas implements Printable, Serializable {
 
             // n will fall through and continue to be used as new v, above
         } 
+        // label
+        if (attribs != null) {
+                String label = (String)attribs.get("label");
+                if (label != null) {
+                Vector end = applyFunction(f, range.max.get(0));
+                if (end == null) {
+                        end = range.max;
+                }
+                int offsetx = 10, offsety = 10;
+                if (end.get(0) instanceof Real && vf.ZERO().compareTo(end.get(0)) < 0)
+                        offsetx = 10;
+                else
+                        offsetx = -10;
+                if (end.get(1) instanceof Real && vf.ZERO().compareTo(end.get(1)) < 0)
+                        offsety = 10;
+                else
+                        offsety = -10;
+                if (end.get(0) instanceof Real && ((Real)range.max.get(0)).compareTo(end.get(0)) < 0)
+                        offsetx = -10;
+                if (end.get(1) instanceof Real && ((Real)range.max.get(1)).compareTo(end.get(1)) < 0)
+                        offsety = -10;
+                        g.drawString(label, sx(end.get(0)) + offsetx, sy(end.get(1)) + offsety);
+                }
+        }
     } 
 
     private Vector applyFunction(Function f, Arithmetic arg) {
@@ -529,7 +571,7 @@ public class Plot2D extends Canvas implements Printable, Serializable {
             Vector vector = (Vector) value;
             assert vector.dimension() == 2 : "Plot2D only handles 2-dimensional vectors";
             if (vector.get(0) == null || vector.get(1) == null)
-            	return null;
+                return null;
             return vector;
         } else
             return Values.getDefaultInstance().valueOf(new Arithmetic[] {

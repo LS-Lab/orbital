@@ -1,7 +1,7 @@
 /*
  * @(#)ChartModel.java 0.9 1999/03/16 Andre Platzer
  * 
- * Copyright (c) 1999 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 1999-2009 Andre Platzer. All Rights Reserved.
  */
 
 package orbital.awt;
@@ -87,8 +87,13 @@ public class ChartModel implements Serializable {
      * @serial
      */
     private Vector                scale = null;
-
     /**
+     * The labels used for the axes.
+     * @serial
+     */
+    private String[] axesLabel;
+
+        /**
      * Whether rainbow colors are used for graphs that have no color setting.
      * @serial
      */
@@ -402,6 +407,16 @@ public class ChartModel implements Serializable {
         }
         return precision;
     }
+
+    public String[] getAxesLabel() {
+                return axesLabel;
+        }
+
+        public void setAxesLabel(String[] newaxesLabel) {
+                String[] old = this.axesLabel;
+                this.axesLabel = newaxesLabel;
+        propertyChangeListeners.firePropertyChange("axesLabel", old, axesLabel);
+        }
 
     /**
      * The entries of a ChartModel's List of displayed graphs.
