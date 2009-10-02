@@ -1442,9 +1442,9 @@ public class ClassicalLogic extends ModernLogic {
             }
         };
     /**
-     * Propositional inference.
+     * Propositional inference using DPLL.
      * Inference mechanism specialized for fast propositional inference.
-     * Currently uses Davis-Putnam-Loveland algorithm.
+     * Currently uses Davis-Putnam-Logeman-Loveland (DPLL) algorithm.
      * @attribute time complexity CoNP-complete
      */
     public static final InferenceMechanism PROPOSITIONAL_INFERENCE = new InferenceMechanism("PROPOSITIONAL",
