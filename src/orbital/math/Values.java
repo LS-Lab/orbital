@@ -137,10 +137,10 @@ public abstract class Values implements ValueFactory {
      *   <tr>
      *     <td><tt>orbital.math.Scalar.precision</tt></td>
      *     <td><ul>
-     *       <li><code>"big"</code> for sticking to arbitrary big precision.</li>
-     *       <li><code>"auto"</code> for automatic fallback to bigger precision when result could otherwise overflow</li>
      *       <li><code>"dynamic"</code> sticks to machine-size for initially machine-sized numbers at the risk of overflows and uses big precision during big precision computations.</li>
-     *       <li><code>"machine"</code> always sticks to machine-size at the risk of overflows regardless of their source (even bigs are reduced to machine size).</li>
+     *       <li><code>"big"</code> for sticking to arbitrary big precision by increasing all input to big precision.</li>
+     *       <li><code>"auto"</code> for automatic fallback to bigger precision when result could otherwise overflow.</li>
+     *       <li><code>"machine"</code> always sticks to machine-size at the risk of overflows regardless of their source (even big arithmetic is reduced to machine size with possible loss of precision).</li>
      *     </ul></td>
      *   </tr>
      * </table>
