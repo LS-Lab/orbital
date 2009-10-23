@@ -9,6 +9,8 @@ import orbital.math.*;
 import orbital.math.Integer;
 
 import java.awt.Dimension;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import orbital.logic.functor.Function;
 
@@ -116,4 +118,13 @@ public class FastValuesImpl extends ValuesImpl {
     public Matrix valueOf(double[][] values) {
         return new RMatrix(values, this);
     } 
+    
+    public Integer valueOf(BigInteger val) {
+    	// possible loss of precision (intended for fast)
+    	return valueOf(val.longValue());
+    }
+    public Real valueOf(BigDecimal val) {
+    	// possible loss of precision (intended for fast)
+    	return valueOf(val.doubleValue());
+    }
 }
