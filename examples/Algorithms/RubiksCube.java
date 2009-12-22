@@ -50,7 +50,6 @@ import util.Basic;
  * moves allowed.</p>
  * 
  * @version $Id$
- * @author  Ute Platzer
  * @author  Andr&eacute; Platzer
  * @see <a href="http://www.npac.syr.edu/projects/java/magic/">Visualization of Rubik's Cube</a>
  */
@@ -163,7 +162,7 @@ public class RubiksCube implements GeneralSearchProblem {
         console.color(Color.white);
         if (solution != null) {
             System.out.println("Found:\n" + solution + "\n");
-            printcubus(solution.feld, 2, 30);
+            printCube(solution.field, 2, 30);
             console.color(Color.white);
             console.LOCATE(4, 9);
             console.print("total accumulated cost of " + NumberFormat.getInstance().format(solution.accumulatedCost) + " steps", false);
@@ -225,17 +224,17 @@ public class RubiksCube implements GeneralSearchProblem {
         switch (SEQUENCE) {
         case COMPLEX:
             // '2 ecken gedreht
-            c.feld[16] = blue;
-            c.feld[6] = yellow;
-            c.feld[9] = red;
-            c.feld[10] = red;
-            c.feld[19] = white;
-            c.feld[13] = yellow;
+            c.field[16] = blue;
+            c.field[6] = yellow;
+            c.field[9] = red;
+            c.field[10] = red;
+            c.field[19] = white;
+            c.field[13] = yellow;
             break;
         case STANDARD: 
             // 'test: einige drehungen
-            c.drehe(2, -1); c.drehe(2, -1); c.drehe(1, 1); c.drehe(2, 1);
-            //c.drehe(1, 1); //c.drehe(2, -1); c.drehe(2, -1); c.drehe(3, -1); c.drehe(2, -1); c.drehe(3, 1); c.drehe(2, -1);
+            c.turn(2, -1); c.turn(2, -1); c.turn(1, 1); c.turn(2, 1);
+            //c.turn(1, 1); //c.turn(2, -1); c.turn(2, -1); c.turn(3, -1); c.turn(2, -1); c.turn(3, 1); c.turn(2, -1);
             break;
         case RANDOM:
             {
@@ -247,7 +246,7 @@ public class RubiksCube implements GeneralSearchProblem {
                 for (int i = 0; i < MAX_STEPS; i++) {
                     int side = MIN_ACTION + random.nextInt(down - MIN_ACTION + 1);
                     int direction = -1 + 2 * random.nextInt(2);
-                    c.drehe(side, direction);
+                    c.turn(side, direction);
                 }
                 System.out.println(c + " of maximum depth " + MAX_STEPS);
             }
@@ -262,7 +261,7 @@ public class RubiksCube implements GeneralSearchProblem {
 
     public Object getInitialState() {
         System.out.println(_initialState + "\n to be solved.\n");
-        printcubus(_initialState.feld, 2, 2);
+        printCube(_initialState.field, 2, 2);
         return _initialState.clone();
     }
 
@@ -286,7 +285,7 @@ public class RubiksCube implements GeneralSearchProblem {
         for (int side = MIN_ACTION; side <= down; side++)
             for (int dir = -1; dir <= 1; dir += 2) {
                 Cube t = (Cube) s.clone();
-                t.drehe(side, dir);
+                t.turn(side, dir);
                 ex.add(t);
             } 
         return ex.iterator();
@@ -324,7 +323,6 @@ public class RubiksCube implements GeneralSearchProblem {
         
     /**
      * The cube state class.
-     * @author Ute Platzer
      */
     protected static class Cube {
         /**
@@ -344,7 +342,7 @@ public class RubiksCube implements GeneralSearchProblem {
          *        +-------+
          * </pre>
          */
-        private int[] feld;
+        private int[] field;
         /**
          * the accumulated cost of for the actions that lead here.
          */
@@ -357,7 +355,7 @@ public class RubiksCube implements GeneralSearchProblem {
         private Cube(int[] field, Real accumulatedCost, StringBuffer actionLog) {
             if (field.length != 2 * 2 * 6)
                 throw new InternalError("not implemented for size " + Math.sqrt(field.length / 6.0));
-            this.feld = field;
+            this.field = field;
             this.accumulatedCost = accumulatedCost;
             clearActionLog();
             //@internal calling append((StringBuffer)actionLog); would not be executable under JVM1.3 but only JVM1.4+
@@ -372,34 +370,34 @@ public class RubiksCube implements GeneralSearchProblem {
             if (size != 2)
                 throw new InternalError("not implemented for size " + size);
             for (int i = 0; i < 4; i++)
-                feld[i] = orange;
+                field[i] = orange;
             for (int i = 4; i < 8; i++)
-                feld[i] = blue;
+                field[i] = blue;
             for (int i = 8; i < 12; i++)
-                feld[i] = yellow;
+                field[i] = yellow;
             for (int i = 12; i < 16; i++)
-                feld[i] = white;
+                field[i] = white;
             for (int i = 16; i < 20; i++)
-                feld[i] = red;
+                field[i] = red;
             for (int i = 20; i < 24; i++)
-                feld[i] = green;
+                field[i] = green;
         }
         public Cube(int size, double accumulatedCost) {
             this(size, Values.getDefaultInstance().valueOf(accumulatedCost));
         }
 
         public Object clone() {
-            return new Cube((int[]) feld.clone(), accumulatedCost, actionLog);
+            return new Cube((int[]) field.clone(), accumulatedCost, actionLog);
         } 
 
         public boolean equals(Object o) {
             if (!(o instanceof Cube))
                 return false;
             Cube b = (Cube) o;
-            if (feld.length != b.feld.length)
+            if (field.length != b.field.length)
                 return false;
-            for (int i = 0; i < feld.length; i++)
-                if (feld[i] != b.feld[i])
+            for (int i = 0; i < field.length; i++)
+                if (field[i] != b.field[i])
                     return false;
             return true;
         } 
@@ -411,8 +409,8 @@ public class RubiksCube implements GeneralSearchProblem {
         public int hashCode() {
             int hash = 0;
             int shift = 0;
-            for (int i = 0; i < feld.length; i++) {
-                hash |= feld[i] << shift;
+            for (int i = 0; i < field.length; i++) {
+                hash |= field[i] << shift;
                 if ((shift += 3) + 2 >= 32)
                     shift -= 32 - 2;
             } 
@@ -420,12 +418,12 @@ public class RubiksCube implements GeneralSearchProblem {
         } 
 
         public String toString() {
-            return MathUtilities.format(feld) + "\n for total accumulated cost " + accumulatedCost + "\n\tmoves that lead here: " + actionLog;
+            return MathUtilities.format(field) + "\n for total accumulated cost " + accumulatedCost + "\n\tmoves that lead here: " + actionLog;
         } 
 
         public boolean isGood() {
-            for (int i = 0; i < feld.length; i = i + 4) {
-                if (!(feld[i] == feld[i + 1] && feld[i] == feld[i + 2] && feld[i] == feld[i + 3]))
+            for (int i = 0; i < field.length; i = i + 4) {
+                if (!(field[i] == field[i + 1] && field[i] == field[i + 2] && field[i] == field[i + 3]))
                     return false;
             } 
             return true;
@@ -439,37 +437,37 @@ public class RubiksCube implements GeneralSearchProblem {
          * @preconditions side&isin;{left,right,top,down,back,front}
          *      &and; direction&isin;{1,-1}
          */
-        public void drehe(int side, int direction) {
+        public void turn(int side, int direction) {
             switch (side) {
             case left:          // 'left - okay
-                reihentausch(0, 1, 2, 3, direction);
-                reihentausch(8, 12, 22, 4, direction);
-                reihentausch(11, 15, 21, 7, direction);
+                swaplines(0, 1, 2, 3, direction);
+                swaplines(8, 12, 22, 4, direction);
+                swaplines(11, 15, 21, 7, direction);
                 break;
             case back:  // 'back
-                reihentausch(4, 5, 6, 7, direction);
-                reihentausch(1, 21, 17, 9, direction);
-                reihentausch(0, 20, 16, 8, direction);
+                swaplines(4, 5, 6, 7, direction);
+                swaplines(1, 21, 17, 9, direction);
+                swaplines(0, 20, 16, 8, direction);
                 break;
             case top:           // 'top
-                reihentausch(8, 9, 10, 11, direction);
-                reihentausch(1, 6, 19, 12, direction);
-                reihentausch(2, 7, 16, 13, direction);
+                swaplines(8, 9, 10, 11, direction);
+                swaplines(1, 6, 19, 12, direction);
+                swaplines(2, 7, 16, 13, direction);
                 break;
             case front:         // 'front
-                reihentausch(12, 13, 14, 15, direction);
-                reihentausch(3, 11, 19, 23, direction);
-                reihentausch(2, 10, 18, 22, direction);
+                swaplines(12, 13, 14, 15, direction);
+                swaplines(3, 11, 19, 23, direction);
+                swaplines(2, 10, 18, 22, direction);
                 break;
             case right: // 'right
-                reihentausch(16, 17, 18, 19, direction);
-                reihentausch(9, 5, 23, 13, direction);
-                reihentausch(10, 6, 20, 14, direction);
+                swaplines(16, 17, 18, 19, direction);
+                swaplines(9, 5, 23, 13, direction);
+                swaplines(10, 6, 20, 14, direction);
                 break;
             case down:          // 'down
-                reihentausch(20, 21, 22, 23, direction);
-                reihentausch(5, 0, 15, 18, direction);
-                reihentausch(4, 3, 14, 17, direction);
+                swaplines(20, 21, 22, 23, direction);
+                swaplines(5, 0, 15, 18, direction);
+                swaplines(4, 3, 14, 17, direction);
                 break;
             default:
                 throw new InternalError("unknown side " + side);
@@ -477,20 +475,20 @@ public class RubiksCube implements GeneralSearchProblem {
             logAction(side, direction);
         } 
 
-        protected void reihentausch(int a, int b, int c, int d, int direction) {
-            int temp = feld[a];
+        protected void swaplines(int a, int b, int c, int d, int direction) {
+            int temp = field[a];
             switch (direction) {
             case -1:    // counter-clockwise
-                feld[a] = feld[b];
-                feld[b] = feld[c];
-                feld[c] = feld[d];
-                feld[d] = temp;
+                field[a] = field[b];
+                field[b] = field[c];
+                field[c] = field[d];
+                field[d] = temp;
                 break;
             case 1:    // clockwise
-                feld[a] = feld[d];
-                feld[d] = feld[c];
-                feld[c] = feld[b];
-                feld[b] = temp;
+                field[a] = field[d];
+                field[d] = field[c];
+                field[c] = field[b];
+                field[b] = temp;
                 break;
             default:
                 throw new InternalError("unknown direction " + direction);
@@ -498,28 +496,28 @@ public class RubiksCube implements GeneralSearchProblem {
         } 
 
 
-        /*protected int seiteheil (int feld[], int seite) {
-          int i = seite * 4 - 3;
-          if (feld[i] == feld[i + 1] && feld[i] == feld[i + 2] && feld[i] == feld[i + 3] ) {
+        /*protected int goodSide (int field[], int side) {
+          int i = side * 4 - 3;
+          if (field[i] == field[i + 1] && field[i] == field[i + 2] && field[i] == field[i + 3] ) {
           //'pr?fe kanten
-          switch(seite) {
+          switch(side) {
           case 1:
-          if (feld[8] == feld[11] && feld[12] == feld[15] && feld[4] == feld[7] && feld[21] == feld[22]) return 1;
+          if (field[8] == field[11] && field[12] == field[15] && field[4] == field[7] && field[21] == field[22]) return 1;
           break;
           case 2:
-          if (feld[8] == feld[9] && feld[0] == feld[1] && feld[16] == feld[17] && feld[20] == feld[21]) return 1;
+          if (field[8] == field[9] && field[0] == field[1] && field[16] == field[17] && field[20] == field[21]) return 1;
           break;
           case 3:
-          if (feld[7] == feld[6] && feld[16] == feld[19] && feld[12] == feld[13] && feld[1] == feld[2]) return 1;
+          if (field[7] == field[6] && field[16] == field[19] && field[12] == field[13] && field[1] == field[2]) return 1;
           break;
           case 5:
-          if (feld[10] == feld[9] && feld[13] == feld[14] && feld[6] == feld[5] && feld[20] == feld[23]) return 1;
+          if (field[10] == field[9] && field[13] == field[14] && field[6] == field[5] && field[20] == field[23]) return 1;
           break;
           case 4:
-          if (feld[11] == feld[10] && feld[18] == feld[19] && feld[2] == feld[3] && feld[23] == feld[22]) return 1;
+          if (field[11] == field[10] && field[18] == field[19] && field[2] == field[3] && field[23] == field[22]) return 1;
           break;
           case 6:
-          if (feld[18] == feld[17] && feld[15] == feld[14] && feld[4] == feld[5] && feld[0] == feld[3]) return 1;
+          if (field[18] == field[17] && field[15] == field[14] && field[4] == field[5] && field[0] == field[3]) return 1;
           break;
           }
           }
@@ -551,7 +549,7 @@ public class RubiksCube implements GeneralSearchProblem {
     /**
      * Display the cube.
      */
-    protected static void printcubus(int feld[], int y, int x) {
+    protected static void printCube(int field[], int y, int x) {
 
         // lazy instantiation of the frame for displaying
         if (console == null)
@@ -568,50 +566,50 @@ public class RubiksCube implements GeneralSearchProblem {
             } 
         } 
         console.LOCATE(x + 2 * f.length(), y);
-        console.color(colors[feld[4]]);
+        console.color(colors[field[4]]);
         console.print(f, false);
-        console.color(colors[feld[5]]);
+        console.color(colors[field[5]]);
         console.print(f, false);
         console.LOCATE(x + 2, y + 1);
-        console.color(colors[feld[7]]);
+        console.color(colors[field[7]]);
         console.print(f, false);
-        console.color(colors[feld[6]]);
+        console.color(colors[field[6]]);
         console.print(f, false);
 
         console.LOCATE(x, y + 2);
         for (int i = 0; i < 17; i += 8) {
-            console.color(colors[feld[i]]);
+            console.color(colors[field[i]]);
             console.print(f, false);
-            console.color(colors[feld[i + 1]]);
+            console.color(colors[field[i + 1]]);
             console.print(f, false);
         } 
-        console.color(colors[feld[20]]);
+        console.color(colors[field[20]]);
         console.print(f, false);
-        console.color(colors[feld[21]]);
+        console.color(colors[field[21]]);
         console.print(f, false);
 
         console.LOCATE(x, y + 3);
         for (int i = 3; i < 20; i += 8) {
-            console.color(colors[feld[i]]);
+            console.color(colors[field[i]]);
             console.print(f, false);
-            console.color(colors[feld[i - 1]]);
+            console.color(colors[field[i - 1]]);
             console.print(f, false);
         } 
-        console.color(colors[feld[23]]);
+        console.color(colors[field[23]]);
         console.print(f, false);
-        console.color(colors[feld[22]]);
+        console.color(colors[field[22]]);
         console.print(f, false);
 
 
         console.LOCATE(x + 2 * f.length(), y + 4);
-        console.color(colors[feld[12]]);
+        console.color(colors[field[12]]);
         console.print(f, false);
-        console.color(colors[feld[13]]);
+        console.color(colors[field[13]]);
         console.print(f, false);
         console.LOCATE(x + 2, y + 5);
-        console.color(colors[feld[15]]);
+        console.color(colors[field[15]]);
         console.print(f, false);
-        console.color(colors[feld[14]]);
+        console.color(colors[field[14]]);
         console.print(f);
     } 
 }

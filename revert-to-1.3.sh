@@ -2,7 +2,6 @@
 # also !/bin/tcsh -f works
 # 
 #  revert-to-1.3.sh     
-#  (c) 2002 Ute Platzer
 #
 
 # directories to be processed

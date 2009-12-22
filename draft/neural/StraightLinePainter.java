@@ -6,7 +6,6 @@ import dkfz.collections.graph.*;
  * Edges are painted with Arrows, or with crossbeams, depending on whether
  * the Interaction has positive or negative strength.
  * Edges are drawn as straight lines between two vertices.
- * @author Ute Platzer
  */
 public class StraightLinePainter extends ViewGraph.DefaultPainter {
 
