@@ -1149,6 +1149,7 @@ public final class AlgebraicAlgorithms {
     /**
      * Construct the syzygy S-polynomial S(f,g) of f and g.
      * <div>S(f,g) = lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(f) f - lcm(l<sub>t</sub>(f),l<sub>t</sub>(g))/l<sub>t</sub>(g) g</div>
+     * <div>S(f,g) = l<sub>t</sub>(g)/gcd(l<sub>t</sub>(f),l<sub>t</sub>(g)) f - l<sub>t</sub>(f)/gcd(l<sub>t</sub>(f),l<sub>t</sub>(g)) g</div>
      * which will let the leading term cancel by construction.
      * Here, l<sub>t</sub>(f) := l<sub>c</sub>(f) l(f) is the <dfn>leading term</dfn>. 
      * @internal Beware: we internally use slightly rescaled S-polynomials.
@@ -1156,6 +1157,7 @@ public final class AlgebraicAlgorithms {
      *  or <code>null</code> if the S-polynomial is known to reduce to 0 (if <code>optimize==true</code>).
      * @param optimize whether to optimize S-polynomial construction and return <code>null</code> objects
      *  instead of S-polynomials.
+     * @todo Construct using gcd instead of lcm? 
      */
     private static final /*<R extends Arithmetic, S extends Arithmetic>*/
         Polynomial/*<R,S>*/ sPolynomial(final Polynomial/*<R,S>*/ f, final Polynomial/*<R,S>*/ g, final Comparator/*<S>*/ monomialOrder, boolean optimize) {
