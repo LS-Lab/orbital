@@ -8,7 +8,7 @@ a|b == b|a		# commutative (Huntington axiom)
 a&true == a		# neutral element (Huntington axiom)
 a|false == a		# neutral element (Huntington axiom)
 a&~a == false		# complement (Huntington axiom) induces Principium contradictionis
-a|~a == true		# complement (Huntington axiom) induces Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11)
+a|~a == true		# complement (Huntington axiom) induces Tertium non datur, law of excluded middle (Russel/Whitehead. Principia Mathematica. 1910, 101 *2.11), does not hold in intuitionistic logic
 #
 # alternative form of Huntington axioms (from Huntington[33b] and [33a])
 # for the logic basis (~,|)
@@ -130,8 +130,17 @@ p->q |= (p|r)->(q|r)
 |= (f->g) | (g->f)	# material implication has strange causal relations
 c&a | ~c&b == c&a | ~c&b | a&b	# consensus rule <= (absorbtion,n,tertium non datur,d)
 (c|a) & (~c|b) == (c|a) & (~c|b) & (a|b)	# consensus rule <= (absorbtion,n,tertium non datur,d)
-|= ((p->q)->p)->p	# Peirce's axiom is the "difference" between an intuitionist system of propositional calculus and a classical system and is not accepted by intuitionists.
-|= (((((p->q)->(~r->~s))->r)->t)->((t->p)->(s->p)))	# Carew Meredith's (1904-1976) sole axiom for propositional calculus. Thought to be the shortest possible single axiom for propositional calculus using ~,->,mp
+
+#
+# Separation of classical logic from intuitionistic logic, either of the following:
+#
+|= p|~p	# Law of excluded middle is the "difference" between an intuitionistic system of propositional calculus and a classical system and is not accepted by intuitionists.
+|= (p->q)->((~p->q)->q)	# equivalent to law of excluded middle is the "difference" between an intuitionistic system of propositional calculus and a classical system and is not accepted by intuitionists.
+|= ((p->q)->p)->p	# Peirce's axiom is the "difference" between an intuitionistic system of propositional calculus and a classical system and is not accepted by intuitionists.
+|= ~~p->p	# Double negation elimination is the "difference" between an intuitionistic system of propositional calculus and a classical system and is not accepted by intuitionists.
+
+
+|= ((((p->q)->(~r->~s))->r)->t)->((t->p)->(s->p))	# Carew Meredith's (1904-1976) sole axiom for propositional calculus. Thought to be the shortest possible single axiom for propositional calculus using ~,->,mp
 
 #
 #
