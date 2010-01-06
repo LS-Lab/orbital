@@ -323,8 +323,13 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 public int compareTo(Object o) {
                         if (o instanceof Double || o instanceof Float) {
                                 return compareDouble(value, ((Number)o).doubleValue());
-                        } else
+                        } else if (o instanceof Big) {
+                                return BigDecimal.valueOf(value).compareTo(((Big)o).value);
+                        } else if (o instanceof AbstractInteger.Big) {
+                                return BigDecimal.valueOf(value).compareTo(new BigDecimal(((AbstractInteger.Big)o).getValue()));
+                        } else {
                                 return ((Integer) Operations.compare.apply(this, o)).intValue();
+                        }
                 } 
 
                 //@internal identical to @see Double#compare(double,double)
