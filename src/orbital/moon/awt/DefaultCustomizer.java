@@ -1,7 +1,7 @@
 /**
  * @(#)DefaultCustomizer.java 1.0 2000/03/30 Andre Platzer
  * 
- * Copyright (c) 2000 Andre Platzer. All Rights Reserved.
+ * Copyright (c) 2000-2009 Andre Platzer. All Rights Reserved.
  * 
  * This software is the confidential and proprietary information
  * of Andre Platzer. ("Confidential Information"). You
@@ -37,7 +37,9 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Frame;
 import javax.swing.*;
+
 import java.awt.event.*;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
@@ -58,6 +60,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.BorderLayout;
+
+import orbital.awt.CustomizerViewController;
 import orbital.awt.UIUtilities;
 import orbital.util.Utility;
 import orbital.math.MathUtilities; // only for MathUtilities.sign
@@ -139,9 +143,33 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * @serial
      */
     private boolean                spacing = false;
-
+    
+    /**
+     * whether to show standard (non-expert, non-hidden) properties
+     * @serial
+     */
+    private boolean showStandard = true;
 
     /**
+     * whether to show expert properties
+     * @serial
+     */
+    private boolean showExpert = true;
+
+    /**
+     * whether to show advanced customization button
+     * @serial
+     */
+    private boolean showAdvanced = true;
+    
+    /**
+     * whether to show hidden properties
+     * @serial
+     */
+    private boolean showHidden = false;
+
+
+	/**
      * Create a default customizer initialized to customize a bean class.
      * @see orbital.awt.CustomizerViewController#customizerFor(Class)
      * @see #init(Class)
@@ -175,6 +203,66 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     public void setTruncation(int truncateAfter) {
         truncation = truncateAfter;
     }
+
+    /**
+     * whether to show standard (non-expert, non-hidden) properties
+     */
+	public boolean isShowStandard() {
+		return showStandard;
+	}
+
+    /**
+     * Set whether to show standard (non-expert, non-hidden) properties
+     * @param standard true to show standard properties
+     */
+	public void setShowStandard(boolean standard) {
+		this.showStandard = standard;
+	}
+
+    /**
+     * whether to show expert properties
+     */
+	public boolean isShowExpert() {
+		return showExpert;
+	}
+
+    /**
+     * Set whether to show expert properties
+     * @param showStandard true to show expert properties
+     */
+	public void setShowExpert(boolean expert) {
+		this.showExpert = expert;
+	}
+
+    /**
+     * whether to show advanced options button
+     */
+	public boolean isShowAdvanced() {
+		return showAdvanced;
+	}
+
+    /**
+     * Set whether to show advanced options button
+     * @param showStandard true to show advanced options button
+     */
+	public void setShowAdvanced(boolean advanced) {
+		this.showAdvanced = advanced;
+	}
+
+    /**
+     * whether to show hidden properties
+	 */
+	public boolean isShowHidden() {
+		return showHidden;
+	}
+
+	/**
+     * Set whether to show hidden properties
+	 * @param hidden true to show hidden properties
+	 */
+	public void setShowHidden(boolean hidden) {
+		this.showHidden = hidden;
+	}
 
     /**
      * Whether or not to put spacing (additional insets) between property fields.
@@ -280,7 +368,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * Will add a property sheet to this DefaultCustomizer panel.
      * @param beanClass for which class of objects this customizer is intended.
      */
-    public void init(Class beanClass) throws IntrospectionException {
+    public void init(final Class beanClass) throws IntrospectionException {
         this.beanClass = beanClass;
         BeanInfo info = getBeanInfo(beanClass);
         if (info == null)
@@ -316,11 +404,25 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 
         propertyEditors = new PropertyEditor[beanProperties.length];
         propertyEditorComponents = new Component[beanProperties.length];
+        boolean advancedProperties = false;
         for (int i = 0; i < beanProperties.length; i++) {
-            if (beanProperties[i].isHidden()) {
+            if (!isShowExpert() && beanProperties[i].isExpert()) {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
+				advancedProperties = true;
+                continue;
+            } else if (!isShowHidden() && beanProperties[i].isHidden()) {
+                // not shown
+                propertyEditors[i] = null;
+                propertyEditorComponents[i] = null;
+				advancedProperties = true;
+                continue;
+            } else if (!isShowStandard() && !beanProperties[i].isExpert() && !beanProperties[i].isHidden()) {
+                // not shown
+                propertyEditors[i] = null;
+                propertyEditorComponents[i] = null;
+				advancedProperties = true;
                 continue;
             }
 
@@ -354,6 +456,39 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             if (propertyEditorComponents[i] instanceof JComponent) {
                 ((JComponent)propertyEditorComponents[i]).setToolTipText(beanProperties[i].getShortDescription());
             }
+        }
+
+        if (advancedProperties && isShowAdvanced() && (!isShowExpert() || !isShowHidden())) {
+        	JButton advanced = new JButton("Advanced");
+            advanced.setToolTipText("Customize advanced options");
+            advanced.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					try {
+					    Customizer c = CustomizerViewController.customizerFor(beanClass);
+					    if (!(c instanceof DefaultCustomizer)) {
+							c = new DefaultCustomizer(beanClass);
+    					}
+						if (c instanceof DefaultCustomizer) {
+							DefaultCustomizer d = (DefaultCustomizer)c;
+							d.setShowAdvanced(false);  // we are already advanced
+							d.setShowStandard(false);
+							d.setShowExpert(!isShowExpert());
+							d.setShowHidden(isShowExpert() && !isShowHidden());
+							d.init(beanClass);
+							d.setObject(bean);
+					        JOptionPane.showMessageDialog(DefaultCustomizer.this, d, "Advanced Options", JOptionPane.PLAIN_MESSAGE);
+							DefaultCustomizer.this.setObject(bean);
+						} else {
+					        JOptionPane.showMessageDialog(DefaultCustomizer.this, "No expert dialog found for advanced options", "Advanced Options", JOptionPane.PLAIN_MESSAGE);							
+						}
+					} catch (IntrospectionException e1) {
+						System.err.println("Internal CustomizerViewController for advanced options: " + e1);
+					}
+					
+				}
+			});
+            this.add(advanced, r);
         }
 
         // Inserts a vertical filler to occupy any remaining vertical space
@@ -563,7 +698,13 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     protected void update(Object bean) throws IntrospectionException {
         try {
             for (int i = 0; i < beanProperties.length; i++) {
-                if (beanProperties[i].isHidden())
+                if (!isShowStandard() && !beanProperties[i].isExpert() && !beanProperties[i].isHidden())
+                    // not shown
+                    continue;
+                if (!isShowExpert() && beanProperties[i].isExpert())
+                    // not shown
+                    continue;
+                if (!isShowHidden() && beanProperties[i].isHidden())
                     // not shown
                     continue;
                 if (getReadMethod(beanProperties[i]) == null)
@@ -573,6 +714,11 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                     && beanProperties[i].getReadMethod() == null)
                     //@XXX: what to do for indexed property read methods without support for non-indexed access?
                     continue;
+                if (propertyEditorComponents[i] == null) {
+					// do not know how to show
+					System.out.println("WARNING: No property editor component for " + beanProperties[i].getDisplayName());
+					continue;
+				}
                 Object         v = bean != null ? beanProperties[i].getReadMethod().invoke(bean, null) : null;
                 PropertyEditor ped = propertyEditors[i];
                 Component      ed = propertyEditorComponents[i];
@@ -636,8 +782,11 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 if (s.length() > truncation)
                     c.setColumns(truncation);
             }
-        } else
-            throw new ClassCastException("illegal argument");
+        } else if (ed == null) {
+			throw new NullPointerException("illegal component editor " + ed);
+	    } else {
+            throw new ClassCastException("illegal argument component editor " + ed + " of type " + ed.getClass());
+        }
     } 
 
     /**

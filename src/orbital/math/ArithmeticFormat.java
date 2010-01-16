@@ -570,6 +570,7 @@ public class ArithmeticFormat extends Format {
     public StringBuffer format(Real v, StringBuffer result, FieldPosition fieldPosition) {
         if (!Real.hasType.apply(v))
             return format((Scalar)v, result, fieldPosition);
+        //@internal possible loss of precision
         return numberFormat.format(v.doubleValue(), result, fieldPosition);
     }
 
