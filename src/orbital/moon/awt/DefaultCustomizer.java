@@ -154,7 +154,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
      * whether to show expert properties
      * @serial
      */
-    private boolean showExpert = true;
+    private boolean showExpert = false;
 
     /**
      * whether to show advanced customization button
