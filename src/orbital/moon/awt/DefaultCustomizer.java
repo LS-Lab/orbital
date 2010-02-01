@@ -404,25 +404,25 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 
         propertyEditors = new PropertyEditor[beanProperties.length];
         propertyEditorComponents = new Component[beanProperties.length];
-        boolean advancedProperties = false;
+        boolean advancedExpertProperties = false;
+        boolean advancedHiddenProperties = false;
         for (int i = 0; i < beanProperties.length; i++) {
             if (!isShowExpert() && beanProperties[i].isExpert()) {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
-				advancedProperties = true;
+				advancedExpertProperties = true;
                 continue;
             } else if (!isShowHidden() && beanProperties[i].isHidden()) {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
-				advancedProperties = true;
+				advancedHiddenProperties = true;
                 continue;
             } else if (!isShowStandard() && !beanProperties[i].isExpert() && !beanProperties[i].isHidden()) {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
-				advancedProperties = true;
                 continue;
             }
 
@@ -458,7 +458,8 @@ public class DefaultCustomizer extends JPanel implements Customizer {
             }
         }
 
-        if (advancedProperties && isShowAdvanced() && (!isShowExpert() || !isShowHidden())) {
+        if (isShowAdvanced() && ((advancedExpertProperties && !isShowExpert())
+                || (advancedHiddenProperties && !isShowHidden()))) {
         	JButton advanced = new JButton("Advanced");
             advanced.setToolTipText("Customize advanced options");
             advanced.addActionListener(new ActionListener() {
