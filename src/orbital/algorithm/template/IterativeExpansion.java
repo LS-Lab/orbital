@@ -193,13 +193,17 @@ public class IterativeExpansion/*<A,S>*/
     }
 
     /**
-     * compares a and b (respecting that &not;(&infin;&le;&infin;) is defined here).
+     * compares a and b (with the addition that &not;(&infin;&le;&infin;) is defined here).
      * @see Comparator#compare(Object,Object)
      */
     private static final int boundCompare(Real a, Real b) {
-        if (a.equals(a.valueFactory().POSITIVE_INFINITY()))
+    	if (a.isInfinite() && a.compareTo(a.zero()) > 0) {
+    		//assert a.equals(a.valueFactory().POSITIVE_INFINITY());
             //@internal even for b == Values.POSITIVE_INFINITY (here)
             return 1;
+    	} else if (b.isInfinite() && b.compareTo(b.zero()) > 0) {
+    		return -1;
+    	}
         return a.compareTo(b);
     }
         
