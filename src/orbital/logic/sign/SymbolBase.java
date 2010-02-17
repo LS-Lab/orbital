@@ -199,11 +199,11 @@ public class SymbolBase implements Symbol, Serializable {
     }
     
     public String toString() {
-        if (Logger.global.isLoggable(Level.ALL)
+        if (isFullForm()
             || getType().equals(Types.getDefault().TYPE()))
             //@internal equivalent to Types.toTypedString(this) but different: else infinite recursion
             return getSignifier() + ':' + getType()
-                + (Logger.global.isLoggable(Level.ALL)
+                + (isFullForm()
                    ? (isVariable() ? "[var]" : "[const]")
                    : ""
                    );
@@ -219,5 +219,22 @@ public class SymbolBase implements Symbol, Serializable {
         return type.equals(Types.TRUTH)
             ? getSignifier()
             : (getSignifier() + '/' + Types.arityOf(type.domain()));
+    }
+    
+    private static boolean fullForm;
+ 
+    /**
+     * Whether to print full form syntax.
+     */
+    public static boolean isFullForm() {
+    	return fullForm;
+    }
+
+    /**
+     * Set whether to print full form syntax notation.
+     * @param full <code>true</code> to use verbose full syntax.
+     */
+    public static void setFullForm(boolean full) {
+    	fullForm = full;
     }
 }
