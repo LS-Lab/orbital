@@ -8,6 +8,7 @@ package orbital.logic.sign.type;
 import orbital.logic.sign.type.Type.Composite;
 
 import orbital.logic.sign.Expression;
+import orbital.logic.sign.SymbolBase;
 
 import orbital.logic.trs.Variable;
 import orbital.logic.functor.Functor;
@@ -320,7 +321,7 @@ public final class Types {
             ? "<null>"
             //@internal SymbolBase.toString() sometimes already prints like toTypedString, so we omit duplicate type descriptions, here
             : (s instanceof Symbol ? ((Symbol)s).getSignifier() : s.toString())
-            + ':' + s.getType() + (Logger.global.isLoggable(Level.ALL) && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
+            + ':' + s.getType() + (SymbolBase.isFullForm() && s instanceof Variable && ((Variable)s).isVariable() ? "[var]" : "");
     }
 
     public static final String toTypedString(Typed s[]) {
