@@ -169,7 +169,7 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     private boolean showHidden = false;
 
 
-	/**
+        /**
      * Create a default customizer initialized to customize a bean class.
      * @see orbital.awt.CustomizerViewController#customizerFor(Class)
      * @see #init(Class)
@@ -207,62 +207,62 @@ public class DefaultCustomizer extends JPanel implements Customizer {
     /**
      * whether to show standard (non-expert, non-hidden) properties
      */
-	public boolean isShowStandard() {
-		return showStandard;
-	}
+        public boolean isShowStandard() {
+                return showStandard;
+        }
 
     /**
      * Set whether to show standard (non-expert, non-hidden) properties
      * @param standard true to show standard properties
      */
-	public void setShowStandard(boolean standard) {
-		this.showStandard = standard;
-	}
+        public void setShowStandard(boolean standard) {
+                this.showStandard = standard;
+        }
 
     /**
      * whether to show expert properties
      */
-	public boolean isShowExpert() {
-		return showExpert;
-	}
+        public boolean isShowExpert() {
+                return showExpert;
+        }
 
     /**
      * Set whether to show expert properties
      * @param showStandard true to show expert properties
      */
-	public void setShowExpert(boolean expert) {
-		this.showExpert = expert;
-	}
+        public void setShowExpert(boolean expert) {
+                this.showExpert = expert;
+        }
 
     /**
      * whether to show advanced options button
      */
-	public boolean isShowAdvanced() {
-		return showAdvanced;
-	}
+        public boolean isShowAdvanced() {
+                return showAdvanced;
+        }
 
     /**
      * Set whether to show advanced options button
      * @param showStandard true to show advanced options button
      */
-	public void setShowAdvanced(boolean advanced) {
-		this.showAdvanced = advanced;
-	}
+        public void setShowAdvanced(boolean advanced) {
+                this.showAdvanced = advanced;
+        }
 
     /**
      * whether to show hidden properties
-	 */
-	public boolean isShowHidden() {
-		return showHidden;
-	}
+         */
+        public boolean isShowHidden() {
+                return showHidden;
+        }
 
-	/**
+        /**
      * Set whether to show hidden properties
-	 * @param hidden true to show hidden properties
-	 */
-	public void setShowHidden(boolean hidden) {
-		this.showHidden = hidden;
-	}
+         * @param hidden true to show hidden properties
+         */
+        public void setShowHidden(boolean hidden) {
+                this.showHidden = hidden;
+        }
 
     /**
      * Whether or not to put spacing (additional insets) between property fields.
@@ -411,13 +411,13 @@ public class DefaultCustomizer extends JPanel implements Customizer {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
-				advancedExpertProperties = true;
+                                advancedExpertProperties = true;
                 continue;
             } else if (!isShowHidden() && beanProperties[i].isHidden()) {
                 // not shown
                 propertyEditors[i] = null;
                 propertyEditorComponents[i] = null;
-				advancedHiddenProperties = true;
+                                advancedHiddenProperties = true;
                 continue;
             } else if (!isShowStandard() && !beanProperties[i].isExpert() && !beanProperties[i].isHidden()) {
                 // not shown
@@ -460,35 +460,35 @@ public class DefaultCustomizer extends JPanel implements Customizer {
 
         if (isShowAdvanced() && ((advancedExpertProperties && !isShowExpert())
                 || (advancedHiddenProperties && !isShowHidden()))) {
-        	JButton advanced = new JButton("Advanced");
+                JButton advanced = new JButton("Advanced");
             advanced.setToolTipText("Customize advanced options");
             advanced.addActionListener(new ActionListener() {
-				
-				public void actionPerformed(ActionEvent e) {
-					try {
-					    Customizer c = CustomizerViewController.customizerFor(beanClass);
-					    if (!(c instanceof DefaultCustomizer)) {
-							c = new DefaultCustomizer(beanClass);
-    					}
-						if (c instanceof DefaultCustomizer) {
-							DefaultCustomizer d = (DefaultCustomizer)c;
-							d.setShowAdvanced(false);  // we are already advanced
-							d.setShowStandard(false);
-							d.setShowExpert(!isShowExpert());
-							d.setShowHidden(isShowExpert() && !isShowHidden());
-							d.init(beanClass);
-							d.setObject(bean);
-					        JOptionPane.showMessageDialog(DefaultCustomizer.this, d, "Advanced Options", JOptionPane.PLAIN_MESSAGE);
-							DefaultCustomizer.this.setObject(bean);
-						} else {
-					        JOptionPane.showMessageDialog(DefaultCustomizer.this, "No expert dialog found for advanced options", "Advanced Options", JOptionPane.PLAIN_MESSAGE);							
-						}
-					} catch (IntrospectionException e1) {
-						System.err.println("Internal CustomizerViewController for advanced options: " + e1);
-					}
-					
-				}
-			});
+                                
+                                public void actionPerformed(ActionEvent e) {
+                                        try {
+                                            Customizer c = CustomizerViewController.customizerFor(beanClass);
+                                            if (!(c instanceof DefaultCustomizer)) {
+                                                        c = new DefaultCustomizer(beanClass);
+                                        }
+                                                if (c instanceof DefaultCustomizer) {
+                                                        DefaultCustomizer d = (DefaultCustomizer)c;
+                                                        d.setShowAdvanced(false);  // we are already advanced
+                                                        d.setShowStandard(false);
+                                                        d.setShowExpert(!isShowExpert());
+                                                        d.setShowHidden(isShowExpert() && !isShowHidden());
+                                                        d.init(beanClass);
+                                                        d.setObject(bean);
+                                                JOptionPane.showMessageDialog(DefaultCustomizer.this, d, "Advanced Options", JOptionPane.PLAIN_MESSAGE);
+                                                        DefaultCustomizer.this.setObject(bean);
+                                                } else {
+                                                JOptionPane.showMessageDialog(DefaultCustomizer.this, "No expert dialog found for advanced options", "Advanced Options", JOptionPane.PLAIN_MESSAGE);                                                    
+                                                }
+                                        } catch (IntrospectionException e1) {
+                                                System.err.println("Internal CustomizerViewController for advanced options: " + e1);
+                                        }
+                                        
+                                }
+                        });
             this.add(advanced, r);
         }
 

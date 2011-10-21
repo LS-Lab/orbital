@@ -325,7 +325,8 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     public Arithmetic/*>R<*/ multiply(Vector/*<R>*/ b) {
         Utility.pre(dimension() == b.dimension(), "vectors for dot-product must have equal dimension");
         // need Functionals.map(Function,Tensor) and Functionals.foldRight(Function,Object,Tensor)
-        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, b.valueFactory().ZERO(), Functionals.map(Operations.times, iterator(), b.iterator()));
+        //@todo the zero component element could be stored too.
+        return (Arithmetic/*>R<*/) Functionals.foldRight(Operations.plus, ((Arithmetic)iterator().next()).zero(), Functionals.map(Operations.times, iterator(), b.iterator()));
     } 
 
     public Vector/*<R>*/ multiply(Scalar s) {
@@ -347,6 +348,7 @@ abstract class AbstractVector/*<R extends Arithmetic>*/ extends AbstractTensor i
     // Arithmetic implementation
     // TODO: think about several implementations, whether further types could be multiplied,...
     public Arithmetic add(Arithmetic b) {
+	// if (!(b instanceof Vector)) throw new ClassCastException(b + "@" + b.getClass() + " cannot be cast to Vector when adding to " + this);
         return add((Vector) b);
     } 
     public Arithmetic subtract(Arithmetic b) {

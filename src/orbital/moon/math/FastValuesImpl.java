@@ -120,11 +120,11 @@ public class FastValuesImpl extends ValuesImpl {
     } 
     
     public Integer valueOf(BigInteger val) {
-    	// possible loss of precision (intended for fast)
-    	return valueOf(val.longValue());
+        // possible loss of precision (intended for fast)
+        return valueOf(val.longValue());
     }
     public Real valueOf(BigDecimal val) {
-    	// possible loss of precision (intended for fast)
-    	return valueOf(val.doubleValue());
+        // possible loss of precision (intended for fast)
+        return valueOf(val.doubleValue());
     }
 }

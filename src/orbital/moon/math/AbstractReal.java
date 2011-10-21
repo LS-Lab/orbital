@@ -175,15 +175,15 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 } 
 
                 public boolean equals(Object o) {
-                	try{ 
+                        try{ 
                         if (o instanceof Double || o instanceof Float) {
                                 //@internal identical to @see Double#equals(Object)
                                 return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
                         } else
                                 return Operations.equal.apply(this, o);
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
+                        }
                 }
 
                 public int hashCode() {
@@ -192,14 +192,14 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                         return (int)(bits ^ (bits >>> 32));
                 }
                 public int compareTo(Object o) {
-                	try {
+                        try {
                         if (o instanceof Double || o instanceof Float) {
                                 return Double.compareDouble(value, ((Number)o).doubleValue());
                         } else
                                 return ((Integer) Operations.compare.apply(this, o)).intValue();
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
+                        }
                 } 
 
                 public Real norm() {
@@ -316,7 +316,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 } 
 
                 public boolean equals(Object o) {
-                	try {
+                        try {
                         if (o instanceof Double || o instanceof Float) {
                                 //@internal identical to @see Double#equals(Object)
                                 return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Real) o).doubleValue());
@@ -324,9 +324,9 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                             return java.lang.Double.doubleToLongBits(doubleValue()) == java.lang.Double.doubleToLongBits(((Integer) o).intValue());
                         } else
                                 return Operations.equal.apply(this, o);
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
+                        }
                 }
 
                 public int hashCode() {
@@ -335,43 +335,43 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                         return (int)(bits ^ (bits >>> 32));
                 }
                 public int compareTo(Object o) {
-                	try {
+                        try {
                         if (o instanceof Double || o instanceof Float) {
                                 return compareDouble(value, ((Number)o).doubleValue());
                         } else if (o instanceof Big) {
-                        	Real v = (Real)o;
-                        	if (v.isNaN()) throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
-                        	if (isInfinite()) {
-                        		if (!v.isInfinite())
-                        			return value >0 ? 1 : -1;
-                        		else 
-                        			throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
-                        	}
+                                Real v = (Real)o;
+                                if (v.isNaN()) throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
+                                if (isInfinite()) {
+                                        if (!v.isInfinite())
+                                                return value >0 ? 1 : -1;
+                                        else 
+                                                throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
+                                }
                             return BigDecimal.valueOf(value).compareTo(((Big)o).value);
                         } else if (o instanceof AbstractInteger.Big) {
-                        	Real v = (Real)o;
-                        	if (v.isNaN()) throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
-                        	if (isInfinite()) {
-                        		if (!v.isInfinite())
-                        			return value >0 ? 1 : -1;
-                        		else 
-                        			throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
-                        	}
+                                Real v = (Real)o;
+                                if (v.isNaN()) throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
+                                if (isInfinite()) {
+                                        if (!v.isInfinite())
+                                                return value >0 ? 1 : -1;
+                                        else 
+                                                throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
+                                }
                             return BigDecimal.valueOf(value).compareTo(new BigDecimal(((AbstractInteger.Big)o).getValue()));
                         } else if (o instanceof AbstractInteger.Int || o instanceof AbstractInteger.Long) {
-                        	if (isInfinite()) {
-                        		if (!((Integer)o).isInfinite())
-                        			return value >0 ? 1 : -1;
-                        		else 
-                        			throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
-                        	}
+                                if (isInfinite()) {
+                                        if (!((Integer)o).isInfinite())
+                                                return value >0 ? 1 : -1;
+                                        else 
+                                                throw new IllegalArgumentException("Cannot compare " + this + " with " + o);
+                                }
                             return BigDecimal.valueOf(value).compareTo(new BigDecimal(((Integer)o).longValue()));
                         } else {
                                 return ((Integer) Operations.compare.apply(this, o)).intValue();
                         }
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + o + "@" + o.getClass()).initCause(ex);
+                        }
                 } 
 
                 //@internal identical to @see Double#compare(double,double)
@@ -537,7 +537,7 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                 } 
 
                 public boolean equals(Object v) {
-                	try {
+                        try {
                         if (v instanceof orbital.moon.math.Big) {
                                 if (v instanceof Big)
                                         //@internal BigDecimal.equals is mincing with scales. Prefer comparaTo
@@ -548,26 +548,26 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                                 else
                                         throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
                         } else if (v instanceof Double || v instanceof Float) {
-                        	Real r = (Real)v;
-                        	if (r.isNaN()) {return false;} // even NaN.equals(NaN) is false
-                        	else if (r.isInfinite()) {
-                        		if (!isInfinite()) {return false;}
-                        		int c0 = compareTo(zero());
-                        		int r0 = r.compareTo(r.zero());
-                        		return c0 < 0 && r0 < 0 || c0>0 && r0 >0; 
-                        	}
-                        	return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue())) == 0;
+                                Real r = (Real)v;
+                                if (r.isNaN()) {return false;} // even NaN.equals(NaN) is false
+                                else if (r.isInfinite()) {
+                                        if (!isInfinite()) {return false;}
+                                        int c0 = compareTo(zero());
+                                        int r0 = r.compareTo(r.zero());
+                                        return c0 < 0 && r0 < 0 || c0>0 && r0 >0; 
+                                }
+                                return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue())) == 0;
                         } else if (v instanceof AbstractInteger.Int || v instanceof AbstractInteger.Long) {
-                        	Integer r = (Integer)v;
+                                Integer r = (Integer)v;
                             return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue())) == 0;
                         }
                         return Operations.equal.apply(this, v);
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + v + "@" + v.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while equaling " + this + "@" + getClass() + " and " + v + "@" + v.getClass()).initCause(ex);
+                        }
                 }
                 public int compareTo(Object v) {
-                	try {
+                        try {
                         if (v instanceof orbital.moon.math.Big) {
                                 if (v instanceof Big)
                                         return value.compareTo(((Big)v).value);
@@ -576,26 +576,26 @@ abstract class AbstractReal extends AbstractComplex implements Real {
                                 else
                                         throw new IllegalArgumentException("unknown arbitrary precision type " + v.getClass() + " " + v);
                         } else if (v instanceof Double || v instanceof Float) {
-                        	Real r = (Real)v;
-                        	if (r.isNaN()) {throw new IllegalArgumentException("Cannot compare " + this + " and " + v);}
-                        	else if (r.isInfinite()) {
-                        		if (isInfinite()) {throw new IllegalArgumentException("Cannot compare " + this + " and " + v);}
-                        		int r0 = r.compareTo(r.zero());
-                        		if (r0 > 0)
-                        			return -1;
-                        		else if (r0 < 0)
-                        			return 1;
-                        		else
-                        			throw new AssertionError("Compare to zero should not yield equals for " + r + " during comparison with " + v);
-                        	}
+                                Real r = (Real)v;
+                                if (r.isNaN()) {throw new IllegalArgumentException("Cannot compare " + this + " and " + v);}
+                                else if (r.isInfinite()) {
+                                        if (isInfinite()) {throw new IllegalArgumentException("Cannot compare " + this + " and " + v);}
+                                        int r0 = r.compareTo(r.zero());
+                                        if (r0 > 0)
+                                                return -1;
+                                        else if (r0 < 0)
+                                                return 1;
+                                        else
+                                                throw new AssertionError("Compare to zero should not yield equals for " + r + " during comparison with " + v);
+                                }
                                 return value.compareTo(BigDecimal.valueOf(((Real)v).doubleValue()));
                         } else if (v instanceof AbstractInteger.Int || v instanceof AbstractInteger.Long) {
                                 return value.compareTo(BigDecimal.valueOf(((Integer)v).longValue()));
                         }
                         return ((Integer) Operations.compare.apply(this, v)).intValue();
-                	} catch(NumberFormatException ex) {
-                		throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + v + "@" + v.getClass()).initCause(ex);
-                	}
+                        } catch(NumberFormatException ex) {
+                                throw  (NumberFormatException) new NumberFormatException(ex + " while comparing " + this + "@" + getClass() + " and " + v + "@" + v.getClass()).initCause(ex);
+                        }
                 }
 
                 BigDecimal getValue() {

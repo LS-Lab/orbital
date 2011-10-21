@@ -538,10 +538,8 @@ public final class NumericalAlgorithms {
             throw new IllegalArgumentException("initial point " + eta + " out of solution bounds [" + min + "," + max + "]");
         if (!isConsistentButcher(butcher))
             throw new IllegalArgumentException("Butcher tableau is inconsistent: " + butcher);
-        if (eta.dimension() != 1)
-            throw new UnsupportedOperationException("not yet implemented for dimension>1: initial values " + eta);
         if (!tau.equals(min))
-            throw new UnsupportedOperationException("not yet implemented for inner initial time " + tau + " not being left border of [" + min + "," + max + "]");
+            throw new UnsupportedOperationException("not yet implemented when initial time " + tau + " is not the left border of [" + min + "," + max + "]");
         final ValueFactory vf = eta.valueFactory();
         // discretisation mesh
         final Real h = max.subtract(min).divide(vf.valueOf(steps));
@@ -601,10 +599,9 @@ public final class NumericalAlgorithms {
             }
             // yn+1 = yn + h*(b.ki)
             // observe that ki is a vector of vectors, hence the type cast
-            Vector ynp1 = yn.add(((Vector)ki.multiply(b)).multiply(h));
+            Vector ynp1 = yn.add(((Vector)ki.multiply(b)).scale(h));
             // f(tn+1,yn+1)
             nodes.set(n, 0, tnp1);
-            assert ynp1.dimension() == 1 : "not yet implemented for dimension>1: initial values " + ynp1;
             nodes.set(n, 1, ynp1.get(0));
             n++;
             tn = tnp1;
@@ -614,7 +611,7 @@ public final class NumericalAlgorithms {
     }
 
     /**
-     * Returns a numerical solution x of the one-dimensional differential equation
+     * Returns a numerical solution x of the differential equation system
      * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
      * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
      */
@@ -625,7 +622,18 @@ public final class NumericalAlgorithms {
     }
 
     /**
-     * Returns a numerical solution x of the one-dimensional differential equation
+     * Returns a numerical solution x of the differential equation system
+     * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
+     * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
+     */
+    public static orbital.math.functional.Function dSolve(orbital.math.functional.BinaryFunction f, Real tau, Real eta,
+                                                          Real a, Real b,
+                                                          int steps) {
+        return dSolve(f, tau, eta, a, b, steps, 4);
+    }
+
+    /**
+     * Returns a numerical solution x of the differential equation system
      * x'(t) = f(t,x(t)), x(&tau;)=&eta; on [a,b].
      * @see #dSolve(orbital.math.functional.BinaryFunction,Real,Vector,Real,Real,int,int)
      */
@@ -705,8 +713,16 @@ public final class NumericalAlgorithms {
 
     private static Matrix getButcherTableau(int order) {
         switch (order) {
+	    case 1:
+	        // (forward) Euler method, only consistent explicit RK with 1 stage
+	        return Values.getDefault().valueOf(new double[][] {
+	            //c,    aij
+	            {0,     0},
+                // b:
+               {0,     1}  //b
+	        });
         case 2:
-            // improved polygons
+            // midpoint method improved polygons
             return Values.getDefault().valueOf(new double[][] {
                 //c,    aij
                 {0,     0,   0},
@@ -715,7 +731,7 @@ public final class NumericalAlgorithms {
                 {0,     0,   1}  //b
             });
             /*case 2:
-            // Heun (p=2)
+            // Heun (p=2) better then midpoint method
             return Values.getDefault().valueOf(new double[][] {
                 //c,    aij
                 {0,  0,0},
