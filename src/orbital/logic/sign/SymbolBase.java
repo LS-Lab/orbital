@@ -227,7 +227,7 @@ public class SymbolBase implements Symbol, Serializable {
      * Whether to print full form syntax.
      */
     public static boolean isFullForm() {
-    	return fullForm;
+        return fullForm;
     }
 
     /**
@@ -235,6 +235,6 @@ public class SymbolBase implements Symbol, Serializable {
      * @param full <code>true</code> to use verbose full syntax.
      */
     public static void setFullForm(boolean full) {
-    	fullForm = full;
+        fullForm = full;
     }
 }

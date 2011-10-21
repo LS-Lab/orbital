@@ -16,7 +16,7 @@ import java.math.BigInteger;
  * @version $Id$
  */
 public class NumericalAlgorithmsTest extends check.TestCase {
-    private static final int TEST_REPETITION = 10;
+    private static final int TEST_REPETITION = 100;
     private Values vf;
     private ArithmeticTestPatternGenerator random;
     private Real tolerance;
@@ -32,7 +32,7 @@ public class NumericalAlgorithmsTest extends check.TestCase {
         return new TestSuite(NumericalAlgorithmsTest.class);
     }
 
-    public void testdSolve() {
+    public void testndSolve() {
         Real tau;
         Real eta;
         Real min, max;
@@ -68,6 +68,38 @@ public class NumericalAlgorithmsTest extends check.TestCase {
                      min, max,
                      steps);
         
+    }
+    
+    public void testndSolve2D() {
+        Real tau = vf.ZERO();
+        Vector eta;
+        Real min, max;
+        int steps = 50;
+        final Symbol t = vf.symbol("t");
+        BinaryFunction f;
+        Function y;
+        
+        Matrix A = vf.valueOf(new double[][] {
+                {0,1},
+                {0,0}
+            });
+            Vector b = vf.valueOf(new double[]{0,0});
+            eta = vf.valueOf(new double[]{0,0});
+            f = Functionals.onSecond((Function)Functions.linear(A).add(Functions.constant(b)));
+            System.out.println("Solving ODE x'(t) ==\n" + f + "\nwith initial value  " + eta + " at " + tau);
+
+            y = AlgebraicAlgorithms.dSolve(A, b, tau, eta);
+            System.out.println("Solving ODE x'(t) ==\n" + A + "*x(t) + " + b + "\nwith initial value  " + eta + " at " + tau + "\nyields " + y);
+            System.out.println("  solution at " + 0 + " is " + y.apply(vf.valueOf(0)));
+            System.out.println("  solution at " + 1 + " is " + y.apply(vf.valueOf(1)));
+            System.out.println("  solution at " + t + " is " + y.apply(t));
+        
+            tau = vf.ZERO();
+            min = tau;
+            max = vf.valueOf(5);
+            checkndSolve(f, tau, eta,
+                         min, max,
+                         steps);
     }
 
     protected void checkndSolve(orbital.math.functional.BinaryFunction/*<Real,Vector<Real>>*/ f, Real tau, Vector/*<Real>*/ eta,
