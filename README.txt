@@ -24,6 +24,25 @@ In order to build all parts of the Orbital library, examples, tests
 and additional files, you may benefit from some additional software. See description
 of build.xml for details.
 
+INSTALLATION
+
+Compiling the Orbital library involves the following steps:
+
+  ant all
+  
+  ant test
+  
+If this does not work right out of the box, edit build.properties to configure the paths in your system
+
+# specify system-specific paths to JavaCC, JLink and MathKernel below.
+# Depending on your installation, you may also have to put ant-commons-net.jar and commons-net.jar into your CLASSPATH for ant
+env.javacchome=/path/to/javacc
+# for unit testing purposes only
+junit.framework.jar=/path/to/junit.jar
+com.wolfram.jlink.kernel=/path/to/MathKernel -mathlink
+com.wolfram.jlink.jar=/path/to/Mathematica/SystemFiles/Links/JLink/JLink.jar
+com.wolfram.jlink.libdir=/path/to/Mathematica/SystemFiles/Links/JLink/SystemFiles/Libraries/MacOSX
+
 
 RELEASE HISTORY
 The Orbital library experiences continuous development since 1996. The major milestones include (without minor releases like 1.1.3)
