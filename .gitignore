@@ -3,6 +3,5 @@ classes/
 report/
 tmp/
 build.properties
-examples/**/*.class
-test/**/*.class
 project.dtd
+lib/ build/taglet/StereotypeTaglet.class
