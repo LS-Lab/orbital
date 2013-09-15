@@ -2,9 +2,11 @@ ORBITAL LIBRARY
 
 The Orbital library is a Java class library providing object-oriented representations and algorithms for logic, mathematics, and computer science. This Java library provides computer algebra, numerical algorithms, theorem proving, search and planning etc. Generally speaking, the conceptual idea behind the Orbital library is to provide extensional services and components for Java, which surround the heart of many scientific applications. Hence the name Orbital library. Orbital library is designed with the goals of flexibility, conceptual simplicity and general applicability
 
-Orbital library on the Web
+ORBITAL LIBRARY ON THE WEB
 
-  http://symbolaris.com/orbital/index.html                        
+  http://symbolaris.com/orbital/index.html
+  
+  https://github.com/LS-Lab/orbital                        
 
 
 COPYRIGHT
