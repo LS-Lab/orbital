@@ -51,9 +51,9 @@
         </tstamp>
 
         <!-- distribution information -->
-        <property name="ftp.target" value="ftp.symbolaris.com"/>
-        <property name="ftp.user" value="ftp1009567-andre"/>
-        <property name="ftp.dir" value="www/orbital"/>
+        <property name="ftp.target"/>
+        <property name="ftp.user"/>
+        <property name="ftp.dir"/>
 
 
         <!-- basedir will be set to parent directory of this file -->

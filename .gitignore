@@ -1,0 +1,7 @@
+dist/
+classes/
+report/
+tmp/
+build.properties
+project.dtd
+lib/ build/taglet/StereotypeTaglet.class
