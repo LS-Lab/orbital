@@ -51,9 +51,9 @@
         </tstamp>
 
         <!-- distribution information -->
-        <property name="ftp.target"/>
-        <property name="ftp.user"/>
-        <property name="ftp.dir"/>
+        <property name="ftp.target" value=""/>
+        <property name="ftp.user" value=""/>
+        <property name="ftp.dir" value=""/>
 
 
         <!-- basedir will be set to parent directory of this file -->

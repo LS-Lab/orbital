@@ -1,32 +1,28 @@
-<<<<<<< HEAD
-Copyright (c) 1996-2008 Andre Platzer. All rights reserved.
-=======
-Copyright (c) 1996-2011 Andre Platzer. All rights reserved.
->>>>>>> 4fa4f65c26af899926313733e80f4d37c861cbb0
+Copyright (c) 1996-2011 Andre Platzer.
 
-License Agreement:
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-This software is the confidential and proprietary information
-of Andre Platzer. ("Confidential Information"). You
-shall not disclose such Confidential Information and shall use
-it only in accordance with the terms of the license agreement
-you entered into.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-NO WARRANTIES ARE GIVEN for any function (express or implied) these
-files and documents might or might not have. The licenser shall never
-be liable for any damage suffered by licensee or any third party as
-a result of using these files or derivatives.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-You are not to modify, adapt, translate, reverse engineer, decompile,
-disassemble, or reverse-engineer the product or attempt to discover
-its source code. You agree to notify your employees and agents who
-may have access to the software of the restrictions contained in this
-Agreement and to insure their compliance with these restrictions.
+Contact Information
 
-Distribution and use of these files and documents is prohibited unless
-you make sure that:
-  (o) this License Agreement and Copyright notice is contained,
-  (o) the files are not modified,
-  (o) you clearly indicate that you use our files, and
-  (o) you give credit to Andre Platzer in all work resulting from the
-      use of these files.
+Electronic Mail: 
+  orbital@symbolaris.com
+
+Paper Mail:
+  Andre Platzer
+  Computer Science Department
+  Carnegie Mellon University
+  5000 Forbes Ave.
+  Pittsburgh, PA 15213
+  USA
